@@ -1,0 +1,64 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  .form-control {
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-left: 20px;
+    }
+
+    .form-field {
+      width: 100%;
+      height: 3rem;
+      background-color: $card-background;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+      border-radius: 30px;
+      box-shadow: 0px 0px 10px 0px #00000062 !important;
+      margin-top: 5%;
+      margin-bottom: 5%;
+
+      &.text-area-field {
+        height: 100% !important;
+      }
+
+      input {
+        border-radius: 20px;
+        width: 90%;
+        height: 2rem;
+        border: none;
+        background: none;
+        background-color: transparent;
+        font-size: 15px;
+        text-indent: 10px;
+        color: white !important;
+      }
+
+      textarea {
+        border: none !important;
+        outline: none !important;
+        color: white !important;
+        -webkit-text-fill-color: white;
+        transition: background-color 5000s ease-in-out 0s;
+        background-color: $card-background;
+        resize: none;
+        height: 100%;
+        width: 80%;
+      }
+    }
+
+    .primary {
+      background: linear-gradient(45deg, #134d80, #238ee9);
+      border-radius: 30px;
+      margin-top: 5%;
+      margin-bottom: 5%;
+    }
+  }
+}
