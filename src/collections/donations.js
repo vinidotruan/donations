@@ -14,6 +14,7 @@ export const getAllActions = async () => {
 };
 
 export const deleteActions = async (id) => {
+  console.log(id);
   return await actionsCollections.doc(id).delete();
 };
 
@@ -23,7 +24,9 @@ export const getMyActions = async (user) => {
     .where("user", "==", user)
     .get();
 
-  return snapshot.docs.map((doc) => doc.data());
+  return snapshot.docs.map((doc) => {
+    return { ...doc.data(), id: doc.id };
+  });
 };
 
 export const getAction = async (id) => {
