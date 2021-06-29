@@ -120,8 +120,7 @@ export default {
 
     const uploadedImage = ref();
     const uploadProgress = ref(0);
-    let isDisabled = ref(form?.user !== user?.uid);
-
+    let isDisabled = ref(route.name !== "Home" && form?.user !== user?.uid);
     if (route.params.id) {
       getAction(route.params.id).then((response) => {
         form.name = response.name;
@@ -135,7 +134,6 @@ export default {
         form.user = response.user;
         uploadedImage.value = response.image;
         isDisabled.value = response?.user !== user?.uid;
-        console.log(isDisabled.value);
       });
     }
     const onSubmit = async () => {
