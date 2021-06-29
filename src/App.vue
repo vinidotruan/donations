@@ -1,7 +1,7 @@
 <template>
   <header v-if="showHeaderOrFooter">
     <span> Doações </span>
-    <span class="material-icons"> search </span>
+    <!-- <span class="material-icons"> search </span> -->
   </header>
   <div class="content">
     <router-view v-slot="{ Component, route }">
