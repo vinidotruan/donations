@@ -12,8 +12,14 @@
   </div>
   <footer class="footer" v-if="showHeaderOrFooter">
     <div class="footer-icons">
-      <router-link :to="{ name: 'Home' }">
+      <router-link :to="{ name: 'Home' }" v-if="showMenu()">
         <div class="item" :class="{ active: route.name == 'Home' }">
+          <span class="material-icons-outlined"> post_add </span>
+        </div>
+      </router-link>
+
+      <router-link :to="{ name: 'Login' }">
+        <div class="item" :class="{ active: route.name == 'Login' }">
           <span class="material-icons-outlined"> person </span>
         </div>
       </router-link>
@@ -24,12 +30,12 @@
         </div>
       </router-link>
 
-      <router-link :to="{ name: 'Login' }">
-        <div class="item" :class="{ active: route.name == 'Login' }">
+      <router-link :to="{ name: 'Favorites' }" v-if="showMenu()">
+        <div class="item" :class="{ active: route.name == 'Favorites' }">
           <span class="material-icons-outlined"> bookmark </span>
         </div>
       </router-link>
-      <router-link :to="{ name: 'MyActions' }">
+      <router-link :to="{ name: 'MyActions' }" v-if="showMenu()">
         <div class="item" :class="{ active: route.name == 'MyActions' }">
           <span class="material-icons-outlined"> toc </span>
         </div>
@@ -41,17 +47,21 @@
 import { ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { watch } from "@vue/runtime-core";
+import firebase from "firebase";
+
 export default {
   name: "App",
   setup() {
     const showHeaderOrFooter = ref(true);
     const route = useRoute();
+    let user = firebase?.auth()?.currentUser;
+
     showHeaderOrFooter.value = route.name != "Login" && route.name != "Signup";
     watch(
       () => route.name,
       () => {
-        console.log("Nome da rota:", route.name);
         if (route.name != "Login" && route.name != "Signup") {
+          user = firebase?.auth()?.currentUser;
           showHeaderOrFooter.value = true;
         } else {
           showHeaderOrFooter.value = false;
@@ -59,7 +69,16 @@ export default {
       }
     );
 
-    return { route, showHeaderOrFooter };
+    watch(
+      () => firebase?.auth()?.currentUser,
+      () => showMenu()
+    );
+
+    const showMenu = () => {
+      return !!user;
+    };
+
+    return { route, showHeaderOrFooter, user, showMenu };
   },
 };
 </script>

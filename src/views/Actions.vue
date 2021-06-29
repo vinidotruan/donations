@@ -1,7 +1,11 @@
 <template>
   <div class="actions">
     <div v-for="action in actions" :key="action.id" class="action-card">
-      <action-card :action="action" :user="user" />
+      <ActionCard
+        :action="action"
+        :user="user"
+        @deleted="getActions(route.name)"
+      />
     </div>
   </div>
 </template>
@@ -24,7 +28,11 @@
 </style>
 <script>
 import ActionCard from "../components/actions/ActionCard.vue";
-import { getAllActions, getMyActions } from "@/collections/donations";
+import {
+  getAllActions,
+  getMyActions,
+  getFavoriteActions,
+} from "@/collections/donations";
 import { ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import firebase from "firebase";
@@ -36,17 +44,18 @@ export default {
   setup() {
     const actions = ref();
     const route = useRoute();
-    const user = firebase.auth().currentUser;
-    const getActions = (param) => {
+    const user = firebase?.auth()?.currentUser;
+    const getActions = async (param) => {
       actions.value = [];
-      if (param !== "Actions") {
-        getMyActions(user.uid).then((response) => {
-          actions.value = response;
-        });
+      if (param === "Actions") {
+        actions.value = await getAllActions();
+      } else if (param === "MyActions" && user) {
+        actions.value = await getMyActions(user.uid);
+      } else if (param === "Favorites" && user) {
+        const response = await getFavoriteActions(user.uid);
+        actions.value = response.favorites;
       } else {
-        getAllActions().then((response) => {
-          actions.value = response;
-        });
+        actions.value = await getAllActions();
       }
     };
 
@@ -58,7 +67,7 @@ export default {
       }
     );
 
-    return { actions, route, user };
+    return { actions, route, user, getActions };
   },
 };
 </script>

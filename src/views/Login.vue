@@ -18,7 +18,6 @@ export default {
   name: "Login",
   setup() {
     const route = useRoute();
-    console.log("Login view loaded");
 
     return { route };
   },

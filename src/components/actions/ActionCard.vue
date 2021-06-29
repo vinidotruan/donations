@@ -6,7 +6,7 @@
     <div class="card-title">
       {{ state?.name }}
     </div>
-    <div class="card-image">
+    <div class="card-image" @click="seeAction(state)">
       <img :src="state?.image" alt="" srcset="" />
     </div>
     <div class="description">
@@ -14,11 +14,15 @@
         <span class="material-icons-outlined">map</span>
         <span>{{ state?.localization }}</span>
       </div>
-      <div class="save" v-if="!user">
+      <div class="save" v-if="showSaveButton()" @click="likeAction()">
         <span class="material-icons-outlined">bookmark_border</span>
         <span>salvar</span>
       </div>
-      <div class="save" v-else>
+      <div
+        class="save"
+        v-if="showDeleteButton()"
+        @click="deleteAction(state?.id)"
+      >
         <span class="material-icons-outlined">delete</span>
         <span>excluir</span>
       </div>
@@ -27,30 +31,69 @@
 </template>
 <script>
 import { ref } from "@vue/reactivity";
+import { deleteActions } from "@/collections/donations";
+import { likeActions } from "@/collections/user";
+import { useRoute, useRouter } from "vue-router";
+import firebase from "firebase";
 export default {
   name: "ActionCard",
-
+  emits: ["deleted"],
   props: {
     action: {
-      id: Number,
+      id: String,
       name: String,
       cep: String,
       picture: String,
       category: String,
-      userId: Number,
+      user: String,
       description: String,
       localization: String,
       contact: String,
     },
     user: {},
   },
-  setup(props) {
+  setup(props, context) {
     const state = ref(props.action);
-
-    const deleteA = (e) => {
-      console.log(e);
+    const route = useRoute();
+    const router = useRouter();
+    const deleteAction = async (actionId) => {
+      try {
+        await deleteActions(actionId);
+        context.emit("deleted");
+      } catch (e) {
+        alert(e);
+      }
     };
-    return { state, deleteA };
+
+    const likeAction = async () => {
+      try {
+        return await likeActions(firebase.auth()?.currentUser.uid, state.value);
+      } catch (e) {
+        alert(e);
+      }
+    };
+    const seeAction = async (action) => {
+      const id = action.id;
+      router.push({ name: "Action", params: { id, teste: id } });
+    };
+
+    const showDeleteButton = () =>
+      !!props.user &&
+      props.user.uid === state.value.user &&
+      route.name == "MyActions";
+
+    const showSaveButton = () =>
+      !!props.user &&
+      props.user.uid !== state.value.user &&
+      route.name == "Actions";
+    return {
+      state,
+      showDeleteButton,
+      showSaveButton,
+      deleteAction,
+      likeAction,
+      seeAction,
+    };
   },
 };
 </script>

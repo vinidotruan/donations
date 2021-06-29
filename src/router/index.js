@@ -5,17 +5,23 @@ const Home = () => import("../views/Home.vue");
 const Actions = () => import("../views/Actions.vue");
 const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
-  },
-  {
     path: "/actions",
     name: "Actions",
     component: Actions,
   },
   {
-    path: "/login",
+    path: "/add-actions",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/action/:id",
+    name: "Action",
+    component: Home,
+    props: true,
+  },
+  {
+    path: "/",
     name: "Login",
     component: Login,
   },
@@ -27,6 +33,11 @@ const routes = [
   {
     path: "/my-actions",
     name: "MyActions",
+    component: Actions,
+  },
+  {
+    path: "/favorites",
+    name: "Favorites",
     component: Actions,
   },
 ];

@@ -36,7 +36,6 @@ export default {
     const router = useRouter();
     const onSubmit = async () => {
       try {
-        console.log(form.email);
         const response = await firebase
           .auth()
           .signInWithEmailAndPassword(form.email, form.password);
@@ -44,7 +43,6 @@ export default {
         router.push({ name: "Actions" });
         return response;
       } catch (e) {
-        console.log(e);
         alert("Não foi possível logar");
       }
     };
